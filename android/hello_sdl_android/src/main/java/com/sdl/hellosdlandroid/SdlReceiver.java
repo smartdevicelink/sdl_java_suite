@@ -44,8 +44,7 @@ public class SdlReceiver extends SdlBroadcastReceiver {
                 }
                 try {
                     pendingIntent.send(context, 0, intent);
-                    context.unregisterReceiver(this);
-                } catch (Exception e) {
+                } catch (PendingIntent.CanceledException e) {
                     e.printStackTrace();
                 }
             }
@@ -83,7 +82,8 @@ public class SdlReceiver extends SdlBroadcastReceiver {
                 if (AndroidTools.hasForegroundServiceTypePermission(context)) {
                     try {
                         pendingIntentToStartService.send(context, 0, startSdlServiceIntent);
-                    } catch (PendingIntent.CanceledException e) {
+                        context.unregisterReceiver(this);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
