@@ -114,6 +114,15 @@ public class IntegrationValidator {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             permissionList.add(Manifest.permission.FOREGROUND_SERVICE);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionList.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            permissionList.add(Manifest.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE);
+        }
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
             String[] permissionInfos = packageInfo.requestedPermissions;
