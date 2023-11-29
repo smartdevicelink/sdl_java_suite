@@ -40,6 +40,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -130,6 +131,26 @@ public class UsbTransferProvider {
 
     }
 
+    protected UsbTransferProvider(Context context, ComponentName service, ParcelFileDescriptor usbPfd, UsbTransferCallback callback) {
+        if (context == null || service == null || usbPfd == null) {
+            throw new IllegalStateException("Supplied params are not correct. Context == null? " + (context == null) + " ComponentName == null? " + (service == null) + " Usb PFD == null? " + usbPfd);
+        }
+        if (usbPfd.getFileDescriptor() != null && usbPfd.getFileDescriptor().valid()) {
+            this.context = context;
+            this.routerService = service;
+            this.callback = callback;
+            this.clientMessenger = new Messenger(new ClientHandler(this));
+            this.usbPfd = usbPfd;
+            checkIsConnected();
+        } else {
+            DebugTool.logError(TAG, "Unable to open accessory");
+            clientMessenger = null;
+            if (callback != null) {
+                callback.onUsbTransferUpdate(false);
+            }
+        }
+    }
+
     @SuppressLint("NewApi")
     private ParcelFileDescriptor getFileDescriptor(UsbAccessory accessory, Context context) {
         if (AndroidTools.isUSBCableConnected(context)) {
@@ -161,6 +182,7 @@ public class UsbTransferProvider {
         if (isBound) {
             unBindFromService();
         }
+        context = null;
     }
 
     private boolean bindToService() {
@@ -173,7 +195,12 @@ public class UsbTransferProvider {
         Intent bindingIntent = new Intent();
         bindingIntent.setClassName(this.routerService.getPackageName(), this.routerService.getClassName());//This sets an explicit intent
         //Quickly make sure it's just up and running
-        context.startService(bindingIntent);
+        bindingIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            context.startService(bindingIntent);
+        } else {
+            context.startForegroundService(bindingIntent);
+        }
         bindingIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_USB_PROVIDER);
         return context.bindService(bindingIntent, routerConnection, Context.BIND_AUTO_CREATE);
     }

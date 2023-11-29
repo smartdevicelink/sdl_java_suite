@@ -34,6 +34,7 @@ package com.smartdevicelink.util;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -49,10 +50,13 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.usb.UsbAccessory;
+import android.hardware.usb.UsbManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -416,5 +420,55 @@ public class AndroidTools {
                 context.registerReceiver(receiver, filter);
             }
         }
+    }
+
+    /**
+     * A helper method is used to see if this app has permission for UsbAccessory.
+     * We need UsbAccessory permission if we are plugged in via AOA and do not have BLUETOOTH_CONNECT
+     * permission for our service to enter the foreground on Android UPSIDE_DOWN_CAKE and greater
+     * @param context a context that will be used to check the permission.
+     * @return true if connected via AOA and we have UsbAccessory permission.
+     */
+    public static boolean hasUsbAccessoryPermission(Context context) {
+        if (context == null) {
+            return false;
+        }
+        UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+        if (manager == null || manager.getAccessoryList() == null) {
+            return false;
+        }
+        for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
+            if (manager.hasPermission(usbAccessory)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper method used to check permission passed in.
+     * @param context Context used to check permission
+     * @param permission String representing permission that is being checked.
+     * @return true if app has permission.
+     */
+    public static boolean checkPermission(Context context, String permission) {
+        if (context == null) {
+            return false;
+        }
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, permission);
+    }
+
+    /**
+     * A helper method used for Android 14 or greater to check if app has necessary permissions
+     * to have a service enter the foreground.
+     * @param context context used to check permissions.
+     * @return true if app has permission to have a service enter foreground or if Android version < 14
+     */
+    public static boolean hasForegroundServiceTypePermission(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return true;
+        }
+        return checkPermission(context,
+                Manifest.permission.BLUETOOTH_CONNECT) || hasUsbAccessoryPermission(context);
     }
 }

@@ -862,6 +862,14 @@ public class SdlRouterService extends Service {
                     ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor) msg.obj;
 
                     if (parcelFileDescriptor != null) {
+                        // Added requirements with Android 14, Checking if we have proper permission to enter the foreground for Foreground service type connectedDevice.
+                        // If we do not have permission to enter the Foreground, we pass off hosting the RouterService to another app.
+                        if (!AndroidTools.hasForegroundServiceTypePermission(service.getApplicationContext())) {
+                            service.deployNextRouterService(parcelFileDescriptor);
+                            acknowledgeUSBAccessoryReceived(msg);
+                            return;
+                        }
+
                         //New USB constructor with PFD
                         service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor, service.usbHandler, msg.getData());
 
@@ -900,16 +908,7 @@ public class SdlRouterService extends Service {
 
 
                     }
-
-                    if (msg.replyTo != null) {
-                        Message message = Message.obtain();
-                        message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
-                        try {
-                            msg.replyTo.send(message);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    acknowledgeUSBAccessoryReceived(msg);
 
                     break;
                 case TransportConstants.ALT_TRANSPORT_CONNECTED:
@@ -917,6 +916,18 @@ public class SdlRouterService extends Service {
                 default:
                     DebugTool.logWarning(TAG, "Unsupported request: " + msg.what);
                     break;
+            }
+        }
+
+        private void acknowledgeUSBAccessoryReceived(Message msg) {
+            if (msg.replyTo != null) {
+                Message message = Message.obtain();
+                message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
+                try {
+                    msg.replyTo.send(message);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1164,9 +1175,16 @@ public class SdlRouterService extends Service {
     }
 
     /**
-     * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
+     * The method will attempt to start up the next router service in line based on the sorting
+     * criteria of best router service.
+     * If a ParcelFileDescriptor is not null, we pass it along to the next RouterService to give
+     * it a chane to connected via AOA. This only happens on Android 14 and above when the app
+     * selected to host the RouterService does not satisfy the requirements for permission
+     * FOREGROUND_SERVICE_CONNECTED_DEVICE. By passing along the usbPfd, it will give the next
+     * RouterService selected a chance to connect.
+     * @param usbPfd a ParcelFileDescriptor used for AOA connections.
      */
-    protected void deployNextRouterService() {
+    protected void deployNextRouterService(ParcelFileDescriptor usbPfd) {
         List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
         if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
             ComponentName name = new ComponentName(this, this.getClass());
@@ -1178,11 +1196,25 @@ public class SdlRouterService extends Service {
                     SdlAppInfo nextUp = sdlAppInfoList.get(i + 1);
                     Intent serviceIntent = new Intent();
                     serviceIntent.setComponent(nextUp.getRouterServiceComponentName());
+                    if (usbPfd != null) {
+                        serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+                        serviceIntent.putExtra(TransportConstants.CONNECTION_TYPE_EXTRA, TransportConstants.AOA_USB);
+                        serviceIntent.putExtra(FOREGROUND_EXTRA, true);
+                    }
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         startService(serviceIntent);
                     } else {
                         try {
                             startForegroundService(serviceIntent);
+                            if (usbPfd != null) {
+                                new UsbTransferProvider(getApplicationContext(), nextUp.getRouterServiceComponentName(), usbPfd, new UsbTransferProvider.UsbTransferCallback() {
+                                    @Override
+                                    public void onUsbTransferUpdate(boolean success) {
+                                        closeSelf();
+                                    }
+                                });
+                            }
+
                         } catch (Exception e) {
                             DebugTool.logError(TAG, "Unable to start next SDL router service. " + e.getMessage());
                         }
@@ -1282,7 +1314,7 @@ public class SdlRouterService extends Service {
         if (firstStart) {
             firstStart = false;
             if (!initCheck(isConnectedOverUSB)) { // Run checks on process and permissions
-                deployNextRouterService();
+                deployNextRouterService(null);
                 closeSelf();
                 return START_REDELIVER_INTENT;
             }
@@ -2632,15 +2664,11 @@ public class SdlRouterService extends Service {
      * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
      */
     private void startAltTransportTimer() {
-        if (Looper.myLooper() == null) {
-            Looper.prepare();
-        }
-
         if (altTransportTimerHandler != null && altTransportTimerRunnable != null) {
             altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
         }
 
-        altTransportTimerHandler = new Handler(Looper.myLooper());
+        altTransportTimerHandler = new Handler(Looper.getMainLooper());
         altTransportTimerRunnable = new Runnable() {
             public void run() {
                 altTransportTimerHandler = null;
