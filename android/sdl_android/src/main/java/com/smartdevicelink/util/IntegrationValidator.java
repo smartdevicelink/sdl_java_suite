@@ -114,6 +114,15 @@ public class IntegrationValidator {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             permissionList.add(Manifest.permission.FOREGROUND_SERVICE);
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permissionList.add(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            permissionList.add(Manifest.permission.POST_NOTIFICATIONS);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            permissionList.add(Manifest.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE);
+        }
         try {
             PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS);
             String[] permissionInfos = packageInfo.requestedPermissions;
@@ -161,6 +170,10 @@ public class IntegrationValidator {
                         int j = 0;
                         for (ResolveInfo sdlReceiver : sdlReceivers) {
                             if (receiver.name.equals(sdlReceiver.activityInfo.name)) {
+                                if (!receiver.exported) {
+                                    retVal.successful = false;
+                                    retVal.resultText = "This application has not marked its SdlBroadcastReceiver as exported";
+                                }
                                 return retVal;
                             }
                         }
@@ -184,6 +197,11 @@ public class IntegrationValidator {
             if (info.serviceInfo.metaData == null || !info.serviceInfo.metaData.containsKey(context.getString(R.string.sdl_router_service_version_name))) {
                 retVal.successful = false;
                 retVal.resultText = "This application has not specified its metadata tags for the SdlRouterService.";
+            }
+
+            if (!info.serviceInfo.exported) {
+                retVal.successful = false;
+                retVal.resultText = "This application has not marked its SdlRouterService as exported.";
             }
         } else {
             retVal.successful = false;
