@@ -332,16 +332,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                             DebugTool.logInfo(TAG, ": This app's package: " + myPackage);
                             DebugTool.logInfo(TAG, ": Router service app's package: " + routerService.getPackageName());
                             if (myPackage != null && myPackage.equalsIgnoreCase(routerService.getPackageName())) {
-                                //If the device is not null the listener should start as well as the
-                                //case where this app was installed after BT connected and is the
-                                //only SDL app installed on the device. (Rare corner case)
-                                if (device != null || sdlAppInfoList.size() == 1) {
-                                    SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
-                                    if (!sdlDeviceListener.isRunning()) {
-                                        sdlDeviceListener.start();
-                                    }
+                                //If this app should be hosting the RS it's time to start the device
+                                //listener. If the BT device is not null and has already connected,
+                                //this app's RS will be started immediately. Otherwise the device
+                                //listener will act as a gate keeper to prevent unnecessary notifications.
+                                SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
+                                if (!sdlDeviceListener.isRunning()) {
+                                    sdlDeviceListener.start();
                                 } else {
-                                    DebugTool.logInfo(TAG, "Not starting device listener, bluetooth device is null and other SDL apps installed.");
+                                    DebugTool.logInfo(TAG, "Device listener is already running");
                                 }
                             } else if (isPreAndroid12RSOnDevice) {
                                 //If the RS app has the BLUETOOTH_CONNECT permission that means it
