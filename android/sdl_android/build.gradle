@@ -5,7 +5,7 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 34
-        versionCode 25
+        versionCode 26
         versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         buildConfigField "String", "VERSION_NAME", '\"' + versionName + '\"'
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
