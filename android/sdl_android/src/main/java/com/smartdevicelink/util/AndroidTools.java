@@ -33,6 +33,8 @@
 package com.smartdevicelink.util;
 
 import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.Manifest;
 import android.content.ComponentName;
@@ -470,5 +472,29 @@ public class AndroidTools {
         }
         return checkPermission(context,
                 Manifest.permission.BLUETOOTH_CONNECT) || hasUsbAccessoryPermission(context);
+    }
+
+    /**
+     * A method that will check to see if there is a bluetooth device possibly connected. It will
+     * only check the headset and A2DP profiles. This is only to be used as a check for starting
+     * the SdlDeviceListener and not a direct start of the router service.
+     * @return if a bluetooth device is connected
+     */
+    @SuppressLint("MissingPermission")
+    public static boolean isBluetoothDeviceConnected() {
+        try {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+                int headsetState = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
+                int a2dpState = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.A2DP);
+                return headsetState == BluetoothAdapter.STATE_CONNECTING
+                        || headsetState == BluetoothAdapter.STATE_CONNECTED
+                        || a2dpState == BluetoothAdapter.STATE_CONNECTING
+                        || a2dpState == BluetoothAdapter.STATE_CONNECTED;
+            }
+        } catch (Exception e) {
+            DebugTool.logError(TAG, "Unable to check for connected bluetooth device", e);
+        }
+        return false;
     }
 }

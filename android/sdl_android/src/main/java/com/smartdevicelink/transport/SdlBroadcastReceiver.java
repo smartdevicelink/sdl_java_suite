@@ -336,11 +336,15 @@ public abstract class SdlBroadcastReceiver extends BroadcastReceiver {
                                 //listener. If the BT device is not null and has already connected,
                                 //this app's RS will be started immediately. Otherwise the device
                                 //listener will act as a gate keeper to prevent unnecessary notifications.
-                                SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
-                                if (!sdlDeviceListener.isRunning()) {
-                                    sdlDeviceListener.start();
+                                if (device != null || AndroidTools.isBluetoothDeviceConnected()) {
+                                    SdlDeviceListener sdlDeviceListener = getSdlDeviceListener(context, device);
+                                    if (!sdlDeviceListener.isRunning()) {
+                                        sdlDeviceListener.start();
+                                    } else {
+                                        DebugTool.logInfo(TAG, "Device listener is already running");
+                                    }
                                 } else {
-                                    DebugTool.logInfo(TAG, "Device listener is already running");
+                                    DebugTool.logInfo(TAG, "No bluetooth device and no device connected");
                                 }
                             } else if (isPreAndroid12RSOnDevice) {
                                 //If the RS app has the BLUETOOTH_CONNECT permission that means it
