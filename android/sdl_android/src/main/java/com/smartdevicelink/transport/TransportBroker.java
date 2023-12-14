@@ -764,10 +764,10 @@ public class TransportBroker {
      * Method to shut down RouterServiceMessenger
      */
     private void shutDownRouterServiceMessenger() {
-        routerServiceMessenger = null;
         if (routerServiceMessageEmitter != null) {
             routerServiceMessageEmitter.close();
         }
         routerServiceMessageEmitter = null;
+        routerServiceMessenger = null;
     }
 }
