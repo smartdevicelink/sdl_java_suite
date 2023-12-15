@@ -44,4 +44,6 @@
 
 - [Remove only app logic for device listener start](https://github.com/smartdevicelink/sdl_java_suite/pull/1879)
 
+- [Fix NPE in TransportBroker](https://github.com/smartdevicelink/sdl_java_suite/pull/1882)
+
 **Full Changelog**: https://github.com/smartdevicelink/sdl_java_suite/compare/5.6.1...RC_5.7.0
