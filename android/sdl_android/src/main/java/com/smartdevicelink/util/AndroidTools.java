@@ -32,6 +32,11 @@
 
 package com.smartdevicelink.util;
 
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
+import android.Manifest;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -47,10 +52,13 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.usb.UsbAccessory;
+import android.hardware.usb.UsbManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.smartdevicelink.marshal.JsonRPCMarshaller;
 import com.smartdevicelink.proxy.rpc.VehicleType;
@@ -391,5 +399,102 @@ public class AndroidTools {
             DebugTool.logError(TAG, "Failed to find resource: " + ex.getMessage() + " - assume vehicle data is supported");
             return null;
         }
+    }
+
+    /**
+     * A helper method to handle adding flags to registering a run time broadcast receiver.
+     *
+     * @param context  a context that will be used to register the receiver with
+     * @param receiver the receiver that will be registered
+     * @param filter   the filter that will be use to filter intents sent to the broadcast receiver
+     * @param flags    any flags that should be used to register the receiver. In most cases this
+     *                 will be {@link  Context#RECEIVER_NOT_EXPORTED} or
+     *                 {@link  Context#RECEIVER_EXPORTED}
+     * @see Context#registerReceiver(BroadcastReceiver, IntentFilter)
+     * @see Context#registerReceiver(BroadcastReceiver, IntentFilter, int)
+     */
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    public static void registerReceiver(Context context, BroadcastReceiver receiver, IntentFilter filter, int flags) {
+        if (context != null && receiver != null && filter != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.registerReceiver(receiver, filter, flags);
+            } else {
+                context.registerReceiver(receiver, filter);
+            }
+        }
+    }
+
+    /**
+     * A helper method is used to see if this app has permission for UsbAccessory.
+     * We need UsbAccessory permission if we are plugged in via AOA and do not have BLUETOOTH_CONNECT
+     * permission for our service to enter the foreground on Android UPSIDE_DOWN_CAKE and greater
+     * @param context a context that will be used to check the permission.
+     * @return true if connected via AOA and we have UsbAccessory permission.
+     */
+    public static boolean hasUsbAccessoryPermission(Context context) {
+        if (context == null) {
+            return false;
+        }
+        UsbManager manager = (UsbManager) context.getSystemService(Context.USB_SERVICE);
+        if (manager == null || manager.getAccessoryList() == null) {
+            return false;
+        }
+        for (final UsbAccessory usbAccessory : manager.getAccessoryList()) {
+            if (manager.hasPermission(usbAccessory)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Helper method used to check permission passed in.
+     * @param context Context used to check permission
+     * @param permission String representing permission that is being checked.
+     * @return true if app has permission.
+     */
+    public static boolean checkPermission(Context context, String permission) {
+        if (context == null) {
+            return false;
+        }
+        return PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(context, permission);
+    }
+
+    /**
+     * A helper method used for Android 14 or greater to check if app has necessary permissions
+     * to have a service enter the foreground.
+     * @param context context used to check permissions.
+     * @return true if app has permission to have a service enter foreground or if Android version < 14
+     */
+    public static boolean hasForegroundServiceTypePermission(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return true;
+        }
+        return checkPermission(context,
+                Manifest.permission.BLUETOOTH_CONNECT) || hasUsbAccessoryPermission(context);
+    }
+
+    /**
+     * A method that will check to see if there is a bluetooth device possibly connected. It will
+     * only check the headset and A2DP profiles. This is only to be used as a check for starting
+     * the SdlDeviceListener and not a direct start of the router service.
+     * @return if a bluetooth device is connected
+     */
+    @SuppressLint("MissingPermission")
+    public static boolean isBluetoothDeviceConnected() {
+        try {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+                int headsetState = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
+                int a2dpState = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.A2DP);
+                return headsetState == BluetoothAdapter.STATE_CONNECTING
+                        || headsetState == BluetoothAdapter.STATE_CONNECTED
+                        || a2dpState == BluetoothAdapter.STATE_CONNECTING
+                        || a2dpState == BluetoothAdapter.STATE_CONNECTED;
+            }
+        } catch (Exception e) {
+            DebugTool.logError(TAG, "Unable to check for connected bluetooth device", e);
+        }
+        return false;
     }
 }

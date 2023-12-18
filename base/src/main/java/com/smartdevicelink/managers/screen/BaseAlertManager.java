@@ -140,6 +140,17 @@ abstract class BaseAlertManager extends BaseSubManager {
     public void presentAlert(AlertView alert, AlertCompletionListener listener) {
         if (getState() == ERROR) {
             DebugTool.logWarning(TAG, "Alert Manager In Error State");
+            if (listener != null) {
+                listener.onComplete(false, null);
+            }
+            return;
+        }
+
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, Cannot present Alert.");
+            if (listener != null) {
+                listener.onComplete(false, null);
+            }
             return;
         }
 
@@ -149,6 +160,9 @@ abstract class BaseAlertManager extends BaseSubManager {
         if (alert.getSoftButtons() != null) {
             if (!BaseScreenManager.checkAndAssignButtonIds(alert.getSoftButtons(), BaseScreenManager.ManagerLocation.ALERT_MANAGER)) {
                 DebugTool.logError(TAG, "Attempted to set soft button objects for Alert, but multiple buttons had the same id.");
+                if (listener != null) {
+                    listener.onComplete(false, null);
+                }
                 return;
             }
             softButtonObjects.addAll(alert.getSoftButtons());
@@ -216,10 +230,14 @@ abstract class BaseAlertManager extends BaseSubManager {
     private void updateTransactionQueueSuspended() {
         if (!isAlertRPCAllowed || currentWindowCapability == null) {
             DebugTool.logInfo(TAG, String.format("Suspending the transaction queue. Current permission status is false: %b, window capabilities are null: %b", isAlertRPCAllowed, currentWindowCapability == null));
-            transactionQueue.pause();
+            if (transactionQueue != null) {
+                transactionQueue.pause();
+            }
         } else {
             DebugTool.logInfo(TAG, "Starting the transaction queue");
-            transactionQueue.resume();
+            if (transactionQueue != null) {
+                transactionQueue.resume();
+            }
         }
     }
 
@@ -332,6 +350,11 @@ abstract class BaseAlertManager extends BaseSubManager {
 
     // Updates pending task with new DisplayCapabilities
     void updatePendingOperationsWithNewWindowCapability() {
+        if (transactionQueue == null) {
+            DebugTool.logError(TAG, "Queue is null, cannot update any Alert operations with new " +
+                    "WindowCapability");
+            return;
+        }
         for (Task task : transactionQueue.getTasksAsList()) {
             if (!(task instanceof PresentAlertOperation)) {
                 continue;

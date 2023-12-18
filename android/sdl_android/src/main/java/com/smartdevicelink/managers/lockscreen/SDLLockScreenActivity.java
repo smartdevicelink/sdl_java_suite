@@ -52,6 +52,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.smartdevicelink.R;
+import com.smartdevicelink.util.AndroidTools;
 
 public class SDLLockScreenActivity extends Activity {
 
@@ -106,7 +107,8 @@ public class SDLLockScreenActivity extends Activity {
         lockscreenFilter.addAction(LOCKSCREEN_DEVICE_LOGO_DOWNLOADED);
 
         // register broadcast receivers
-        registerReceiver(lockScreenBroadcastReceiver, lockscreenFilter);
+        AndroidTools.registerReceiver(this, lockScreenBroadcastReceiver, lockscreenFilter,
+                RECEIVER_NOT_EXPORTED);
     }
 
     @Override
@@ -284,7 +286,9 @@ public class SDLLockScreenActivity extends Activity {
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
             if ((event2.getY() - event1.getY()) > MIN_SWIPE_DISTANCE) {
-                sendBroadcast(new Intent(KEY_LOCKSCREEN_DISMISSED));
+                Intent intent = new Intent(KEY_LOCKSCREEN_DISMISSED)
+                        .setPackage(getPackageName());
+                sendBroadcast(intent);
                 finish();
             }
             return true;

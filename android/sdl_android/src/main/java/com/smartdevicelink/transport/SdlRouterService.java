@@ -145,7 +145,7 @@ public class SdlRouterService extends Service {
     /**
      * <b> NOTE: DO NOT MODIFY THIS UNLESS YOU KNOW WHAT YOU'RE DOING.</b>
      */
-    protected static final int ROUTER_SERVICE_VERSION_NUMBER = 16;
+    protected static final int ROUTER_SERVICE_VERSION_NUMBER = 17;
 
     private static final String ROUTER_SERVICE_PROCESS = "com.smartdevicelink.router";
 
@@ -239,7 +239,6 @@ public class SdlRouterService extends Service {
      * Executor for making sure clients are still running during trying times
      */
     private ScheduledExecutorService clientPingExecutor = null;
-    Intent pingIntent = null;
     private boolean isPingingClients = false;
     int pingCount = 0;
 
@@ -818,10 +817,8 @@ public class SdlRouterService extends Service {
                         }
                     }
                     if (service.isPrimaryTransportConnected() && ((TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING & flags) == TransportConstants.ROUTER_STATUS_FLAG_TRIGGER_PING)) {
-                        if (service.pingIntent == null) {
-                            service.initPingIntent();
-                        }
-                        AndroidTools.sendExplicitBroadcast(service.getApplicationContext(), service.pingIntent, null);
+                        AndroidTools.sendExplicitBroadcast(service.getApplicationContext(),
+                                service.createPingIntent(), null);
                     }
                     break;
                 default:
@@ -865,6 +862,14 @@ public class SdlRouterService extends Service {
                     ParcelFileDescriptor parcelFileDescriptor = (ParcelFileDescriptor) msg.obj;
 
                     if (parcelFileDescriptor != null) {
+                        // Added requirements with Android 14, Checking if we have proper permission to enter the foreground for Foreground service type connectedDevice.
+                        // If we do not have permission to enter the Foreground, we pass off hosting the RouterService to another app.
+                        if (!AndroidTools.hasForegroundServiceTypePermission(service.getApplicationContext())) {
+                            service.deployNextRouterService(parcelFileDescriptor);
+                            acknowledgeUSBAccessoryReceived(msg);
+                            return;
+                        }
+
                         //New USB constructor with PFD
                         service.usbTransport = new MultiplexUsbTransport(parcelFileDescriptor, service.usbHandler, msg.getData());
 
@@ -903,16 +908,7 @@ public class SdlRouterService extends Service {
 
 
                     }
-
-                    if (msg.replyTo != null) {
-                        Message message = Message.obtain();
-                        message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
-                        try {
-                            msg.replyTo.send(message);
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
+                    acknowledgeUSBAccessoryReceived(msg);
 
                     break;
                 case TransportConstants.ALT_TRANSPORT_CONNECTED:
@@ -920,6 +916,18 @@ public class SdlRouterService extends Service {
                 default:
                     DebugTool.logWarning(TAG, "Unsupported request: " + msg.what);
                     break;
+            }
+        }
+
+        private void acknowledgeUSBAccessoryReceived(Message msg) {
+            if (msg.replyTo != null) {
+                Message message = Message.obtain();
+                message.what = TransportConstants.ROUTER_USB_ACC_RECEIVED;
+                try {
+                    msg.replyTo.send(message);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -1167,9 +1175,16 @@ public class SdlRouterService extends Service {
     }
 
     /**
-     * The method will attempt to start up the next router service in line based on the sorting criteria of best router service.
+     * The method will attempt to start up the next router service in line based on the sorting
+     * criteria of best router service.
+     * If a ParcelFileDescriptor is not null, we pass it along to the next RouterService to give
+     * it a chane to connected via AOA. This only happens on Android 14 and above when the app
+     * selected to host the RouterService does not satisfy the requirements for permission
+     * FOREGROUND_SERVICE_CONNECTED_DEVICE. By passing along the usbPfd, it will give the next
+     * RouterService selected a chance to connect.
+     * @param usbPfd a ParcelFileDescriptor used for AOA connections.
      */
-    protected void deployNextRouterService() {
+    protected void deployNextRouterService(ParcelFileDescriptor usbPfd) {
         List<SdlAppInfo> sdlAppInfoList = AndroidTools.querySdlAppInfo(getApplicationContext(), new SdlAppInfo.BestRouterComparator(), null);
         if (sdlAppInfoList != null && !sdlAppInfoList.isEmpty()) {
             ComponentName name = new ComponentName(this, this.getClass());
@@ -1181,11 +1196,25 @@ public class SdlRouterService extends Service {
                     SdlAppInfo nextUp = sdlAppInfoList.get(i + 1);
                     Intent serviceIntent = new Intent();
                     serviceIntent.setComponent(nextUp.getRouterServiceComponentName());
+                    if (usbPfd != null) {
+                        serviceIntent.setAction(TransportConstants.BIND_REQUEST_TYPE_ALT_TRANSPORT);
+                        serviceIntent.putExtra(TransportConstants.CONNECTION_TYPE_EXTRA, TransportConstants.AOA_USB);
+                        serviceIntent.putExtra(FOREGROUND_EXTRA, true);
+                    }
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                         startService(serviceIntent);
                     } else {
                         try {
                             startForegroundService(serviceIntent);
+                            if (usbPfd != null) {
+                                new UsbTransferProvider(getApplicationContext(), nextUp.getRouterServiceComponentName(), usbPfd, new UsbTransferProvider.UsbTransferCallback() {
+                                    @Override
+                                    public void onUsbTransferUpdate(boolean success) {
+                                        closeSelf();
+                                    }
+                                });
+                            }
+
                         } catch (Exception e) {
                             DebugTool.logError(TAG, "Unable to start next SDL router service. " + e.getMessage());
                         }
@@ -1213,7 +1242,7 @@ public class SdlRouterService extends Service {
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(REGISTER_WITH_ROUTER_ACTION);
-        registerReceiver(mainServiceReceiver, filter);
+        AndroidTools.registerReceiver(this, mainServiceReceiver, filter, RECEIVER_EXPORTED);
 
         if (!connectAsClient) {
             if (bluetoothAvailable()) {
@@ -1285,7 +1314,7 @@ public class SdlRouterService extends Service {
         if (firstStart) {
             firstStart = false;
             if (!initCheck(isConnectedOverUSB)) { // Run checks on process and permissions
-                deployNextRouterService();
+                deployNextRouterService(null);
                 closeSelf();
                 return START_REDELIVER_INTENT;
             }
@@ -1861,6 +1890,7 @@ public class SdlRouterService extends Service {
             //the developer can use this pendingIntent to start their SdlService from the context of
             //the active RouterService
             Intent pending = new Intent();
+            pending.setPackage(getPackageName());
             PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
             startService.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
         }
@@ -2634,15 +2664,11 @@ public class SdlRouterService extends Service {
      * This method is used to check for the newest version of this class to make sure the latest and greatest is up and running.
      */
     private void startAltTransportTimer() {
-        if (Looper.myLooper() == null) {
-            Looper.prepare();
-        }
-
         if (altTransportTimerHandler != null && altTransportTimerRunnable != null) {
             altTransportTimerHandler.removeCallbacks(altTransportTimerRunnable);
         }
 
-        altTransportTimerHandler = new Handler(Looper.myLooper());
+        altTransportTimerHandler = new Handler(Looper.getMainLooper());
         altTransportTimerRunnable = new Runnable() {
             public void run() {
                 altTransportTimerHandler = null;
@@ -2942,6 +2968,9 @@ public class SdlRouterService extends Service {
         long currentPriority = -Long.MAX_VALUE, peekWeight;
         synchronized (REGISTERED_APPS_LOCK) {
             PacketWriteTask peekTask;
+            if (registeredApps == null) {
+                return null;
+            }
             for (RegisteredApp app : registeredApps.values()) {
                 peekTask = app.peekNextTask(transportType);
                 if (peekTask != null) {
@@ -2967,16 +2996,30 @@ public class SdlRouterService extends Service {
         return null;
     }
 
-    private void initPingIntent() {
-        pingIntent = new Intent();
+    private Intent createPingIntent() {
+        Intent pingIntent = new Intent();
         pingIntent.setAction(TransportConstants.START_ROUTER_SERVICE_ACTION);
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_EXTRA, true);
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_APP_PACKAGE, getBaseContext().getPackageName());
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_CMP_NAME, new ComponentName(SdlRouterService.this, SdlRouterService.this.getClass()));
         pingIntent.putExtra(TransportConstants.START_ROUTER_SERVICE_SDL_ENABLED_PING, true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            //Starting in Android 12 we need to start services from a foreground context
+            //To enable developers to be able to start their SdlService from the "background"
+            //we will attach a pendingIntent as an extra to the intent
+            //the developer can use this pendingIntent to start their SdlService from the context of
+            //the active RouterService
+            Intent pending = new Intent();
+            pending.setPackage(getPackageName());
+            PendingIntent pendingIntent = PendingIntent.getForegroundService(this, (int) System.currentTimeMillis(), pending, PendingIntent.FLAG_MUTABLE | Intent.FILL_IN_COMPONENT);
+            pingIntent.putExtra(TransportConstants.PENDING_INTENT_EXTRA, pendingIntent);
+        }
+
         if (receivedVehicleType != null) {
             pingIntent.putExtra(TransportConstants.VEHICLE_INFO_EXTRA, receivedVehicleType.getStore());
         }
+
+        return pingIntent;
     }
 
     private void startClientPings() {
@@ -3001,6 +3044,7 @@ public class SdlRouterService extends Service {
 
             clientPingExecutor.scheduleAtFixedRate(new Runnable() {
                 List<ResolveInfo> sdlApps;
+                Intent pingIntent;
 
                 @Override
                 public void run() {
@@ -3010,7 +3054,7 @@ public class SdlRouterService extends Service {
                         return;
                     }
                     if (pingIntent == null) {
-                        initPingIntent();
+                        pingIntent = createPingIntent();
                     }
 
                     if (sdlApps == null) {
@@ -3039,7 +3083,6 @@ public class SdlRouterService extends Service {
             clientPingExecutor = null;
             isPingingClients = false;
         }
-        pingIntent = null;
     }
 
     /* ****************************************************************************************************************************************
@@ -3899,6 +3942,13 @@ public class SdlRouterService extends Service {
     @TargetApi(11)
     @SuppressLint("NewApi")
     private void notifySppError() {
+        synchronized (FOREGROUND_NOTIFICATION_LOCK) {
+            // Check first to see if the RouterService is in the Foreground
+            // This is to prevent the notification appearing in error
+            if (!this.isForeground) {
+                return;
+            }
+        }
         Notification.Builder builder;
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             builder = new Notification.Builder(getApplicationContext());

@@ -1,4 +1,4 @@
-<manifest package="com.smartdevicelink"
+<manifest package="com.smartdevicelink.test"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk android:minSdkVersion="16" />
@@ -16,7 +16,7 @@
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
-        <activity android:name=".managers.lockscreen.SDLLockScreenActivity"/>
+        <activity android:name="com.smartdevicelink.managers.lockscreen.SDLLockScreenActivity" />
     </application>
 
 </manifest>
