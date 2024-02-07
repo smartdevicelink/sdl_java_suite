@@ -1,5 +1,4 @@
-<manifest package="com.smartdevicelink"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk tools:overrideLibrary="android.arch.lifecycle, android.arch.lifecycle.extensions, android.arch.lifecycle.livedata, android.arch.lifecycle.livedata.core, android.arch.core, android.arch.lifecycle.viewmodel, android.support.fragment, android.support.coreui, android.support.coreutils, android.support.compat" />
 </manifest>
