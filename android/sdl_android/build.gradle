@@ -67,7 +67,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.27.0'
     }
 }
 
