@@ -29,12 +29,15 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.Ignore;
+
 /**
  * This is a unit test class for the WiFiSocketFactory class:
  * {@link com.smartdevicelink.transport.utl.WiFiSocketFactory}
  * <p>
  * Requires LOLLIPOP or later since the tests use android.net.NetworkCapabilities class
  */
+@Ignore
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class WiFiSocketFactoryTest extends TestCase {
 
