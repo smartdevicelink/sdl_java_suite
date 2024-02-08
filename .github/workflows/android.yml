@@ -21,7 +21,8 @@ jobs:
       # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 29
+        api-level: 33
+        arch: x86_64
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
     - name: Hello Sdl Android Tests
