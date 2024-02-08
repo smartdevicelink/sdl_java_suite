@@ -23,7 +23,6 @@ jobs:
       with:
         api-level: 29
         target: google_apis
-        arch: x86_64
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
     - name: Hello Sdl Android Tests
