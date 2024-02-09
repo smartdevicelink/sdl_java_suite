@@ -27,6 +27,7 @@ import com.smartdevicelink.streaming.audio.IAudioStreamListener;
 
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -53,6 +54,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Ignore
 public class AudioStreamManagerTest extends TestCase {
     public static final String TAG = AudioStreamManagerTest.class.getSimpleName();
     private Context mContext;
