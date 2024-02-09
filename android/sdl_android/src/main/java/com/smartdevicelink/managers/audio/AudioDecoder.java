@@ -31,6 +31,7 @@
  */
 package com.smartdevicelink.managers.audio;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.media.MediaCodec;
 import android.media.MediaFormat;
@@ -48,7 +49,7 @@ import java.nio.ByteBuffer;
 /**
  * The audio decoder to decode a single audio file to PCM.
  */
-@RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class AudioDecoder extends BaseAudioDecoder {
     private static final String TAG = AudioDecoder.class.getSimpleName();
 
