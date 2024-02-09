@@ -95,7 +95,8 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
 
     }
 
-    @Test void testFail() {
+    @Test
+    public void testFail() {
         if(!DeviceUtil.isEmulator()) {
             int x = 1;
             assertEquals(0, 1);
