@@ -99,7 +99,10 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
     public void testFail() {
         if(!DeviceUtil.isEmulator()) {
             int x = 1;
-            assertEquals(0, 1);
+            assertEquals("Build.FINGERPRINT: " + Build.FINGERPRINT + " Build.MODEL: " + Build.MODEL
+                    +" Build.MANUFACTURER: " +Build.MANUFACTURER + " Build.BRAND: " + Build.BRAND
+                    + " Build.DEVICE: " + Build.DEVICE + " Build.PRODUCT: " + Build.PRODUCT,
+                    0, 1);
         }
     }
 
