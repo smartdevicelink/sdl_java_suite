@@ -1,5 +1,6 @@
 package com.smartdevicelink.test.transport;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -52,11 +53,12 @@ public class MultiplexBluetoothTransportTest extends TestCase {
         assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);
 
         bluetooth.start();
-        if (DeviceUtil.isEmulator()) {
+/*        if (DeviceUtil.isEmulator()) {
             assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);
         } else {
             assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_LISTEN);
-        }
+        }*/
+        assertEquals(Build.VERSION.SDK_INT, MultiplexBluetoothTransport.STATE_NONE);
 
         bluetooth.stop();
         assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);
