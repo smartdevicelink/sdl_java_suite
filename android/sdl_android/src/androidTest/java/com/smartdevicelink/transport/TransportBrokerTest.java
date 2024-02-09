@@ -2,6 +2,7 @@ package com.smartdevicelink.transport;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -17,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -66,7 +68,7 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
 
         TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 
-        if (!DeviceUtil.isEmulator()) { // Cannot perform MBT operations in emulator
+        if (!DeviceUtil.isEmulator() || Build.VERSION.SDK_INT >= 30 ) { // Cannot perform MBT operations in emulator
             assertTrue(broker.start());
         }
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
@@ -91,6 +93,13 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
 
         broker.stop();
 
+    }
+
+    @Test void testFail() {
+        if(!DeviceUtil.isEmulator()) {
+            int x = 1;
+            assertEquals(0, 1);
+        }
     }
 
     @Test
