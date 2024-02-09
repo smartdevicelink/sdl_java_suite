@@ -134,99 +134,130 @@ public class AudioStreamManagerTest extends TestCase {
     }
 
     public void testWithSquareSampleAudio16BitAnd8KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio16BitAnd16KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio16BitAnd22KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio16BitAnd44KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd8KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd16KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd22KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd44KhzApi16() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 16);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio16BitAnd8KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio16BitAnd16KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio16BitAnd22KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio16BitAnd44KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._16_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.SIGNED_16_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd8KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
     }
 
     public void testWithSquareSampleAudio8BitAnd16KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._16KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(16000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd22KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._22KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(22050, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd44KhzApi21() throws Exception {
+        int versionCode = Build.VERSION.SDK_INT;
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._44KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(44100, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     private int testFullAudioManagerDecodeFlowCorrectCounter = 0;
