@@ -53,7 +53,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-@Ignore
+
 public class AudioStreamManagerTest extends TestCase {
     public static final String TAG = AudioStreamManagerTest.class.getSimpleName();
     private Context mContext;
@@ -235,6 +235,7 @@ public class AudioStreamManagerTest extends TestCase {
         setFinalStatic(Build.VERSION.class.getField("SDK_INT"), 21);
         AudioPassThruCapabilities audioPassThruCapabilities = new AudioPassThruCapabilities(SamplingRate._8KHZ, BitsPerSample._8_BIT, AudioType.PCM);
         runFullAudioManagerDecodeFlowWithSquareSampleAudio(8000, SampleType.UNSIGNED_8_BIT, audioPassThruCapabilities);
+        setFinalStatic(Build.VERSION.class.getField("SDK_INT"), versionCode);
     }
 
     public void testWithSquareSampleAudio8BitAnd16KhzApi21() throws Exception {
