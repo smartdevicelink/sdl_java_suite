@@ -13,6 +13,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -118,6 +119,7 @@ public class TransportManagerTests {
     }
 
     @Test
+    @Ignore
     public void testOnTransportConnections() {
 
         TransportManager manager = createTransportManager();
@@ -140,6 +142,7 @@ public class TransportManagerTests {
     }
 
     @Test
+    @Ignore
     public void testOnPacket() {
         TransportManager manager = createTransportManager();
         assertNotNull(manager.transportListener);

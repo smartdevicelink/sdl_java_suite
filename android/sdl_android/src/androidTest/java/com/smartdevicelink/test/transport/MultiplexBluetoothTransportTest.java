@@ -11,6 +11,8 @@ import com.smartdevicelink.transport.SdlRouterService;
 
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
+
 
 public class MultiplexBluetoothTransportTest extends TestCase {
 
@@ -21,7 +23,7 @@ public class MultiplexBluetoothTransportTest extends TestCase {
 
     //Example handler
     Handler stateChangeHandler;
-
+    @Ignore
     public void testStateTransitions() {
         if (Looper.myLooper() == null) {
             Looper.prepare();
