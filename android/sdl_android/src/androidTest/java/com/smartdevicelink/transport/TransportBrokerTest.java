@@ -2,7 +2,6 @@ package com.smartdevicelink.transport;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.ComponentName;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
@@ -94,17 +92,7 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
         broker.stop();
 
     }
-
-    @Test
-    public void testFail() {
-        if(!DeviceUtil.isEmulator()) {
-            int x = 1;
-            assertEquals("Build.FINGERPRINT: " + Build.FINGERPRINT + " Build.MODEL: " + Build.MODEL
-                    +" Build.MANUFACTURER: " +Build.MANUFACTURER + " Build.BRAND: " + Build.BRAND
-                    + " Build.DEVICE: " + Build.DEVICE + " Build.PRODUCT: " + Build.PRODUCT,
-                    0, 1);
-        }
-    }
+    
 
     @Test
     public void testOnPacketReceived() {

@@ -246,7 +246,7 @@ public class PreloadPresentChoicesOperationTests {
 
     private void sleep() {
         try {
-            Thread.sleep(300);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

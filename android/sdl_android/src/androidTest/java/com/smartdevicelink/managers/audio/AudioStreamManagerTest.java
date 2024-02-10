@@ -27,7 +27,6 @@ import com.smartdevicelink.streaming.audio.IAudioStreamListener;
 
 import junit.framework.TestCase;
 
-import org.junit.Ignore;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
