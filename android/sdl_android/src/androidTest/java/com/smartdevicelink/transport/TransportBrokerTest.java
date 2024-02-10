@@ -68,7 +68,7 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
 
         TransportBroker broker = new TransportBroker(getInstrumentation().getTargetContext(), SdlUnitTestContants.TEST_APP_ID, rsvp.getService());
 
-        if (!DeviceUtil.isEmulator() || Build.VERSION.SDK_INT >= 30 ) { // Cannot perform MBT operations in emulator
+        if (!DeviceUtil.isEmulator()) { // Cannot perform MBT operations in emulator
             assertTrue(broker.start());
         }
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
