@@ -38,6 +38,7 @@ public class LockScreenDeviceIconManagerTests {
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         lockScreenDeviceIconManager.retrieveIcon("", listener);
+        sleep();
         verify(listener, times(2)).onError(anyString());
     }
 
@@ -52,6 +53,7 @@ public class LockScreenDeviceIconManagerTests {
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         lockScreenDeviceIconManager.retrieveIcon(ICON_URL, listener);
+        sleep();
         verify(listener, times(1)).onImageRetrieved((Bitmap) any());
     }
 
@@ -66,6 +68,7 @@ public class LockScreenDeviceIconManagerTests {
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         lockScreenDeviceIconManager.retrieveIcon(ICON_URL, listener);
+        sleep();
         verify(listener, times(1)).onImageRetrieved((Bitmap) any());
     }
 
@@ -83,6 +86,7 @@ public class LockScreenDeviceIconManagerTests {
 
         lockScreenDeviceIconManager = new LockScreenDeviceIconManager(context);
         lockScreenDeviceIconManager.retrieveIcon(ICON_URL, listener);
+        sleep();
         verify(listener, times(1)).onImageRetrieved((Bitmap) any());
     }
 
@@ -90,5 +94,13 @@ public class LockScreenDeviceIconManagerTests {
         long milliSeconds = (long) days * 24 * 60 * 60 * 1000;
         long previousDay = System.currentTimeMillis() - milliSeconds;
         return String.valueOf(previousDay);
+    }
+
+    private void sleep() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
