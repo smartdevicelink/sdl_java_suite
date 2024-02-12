@@ -1,11 +1,13 @@
 package com.smartdevicelink.util;
 
+import android.Manifest;
 import android.content.Context;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 import android.os.Build;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.smartdevicelink.managers.SdlManager;
 import com.smartdevicelink.managers.SdlManagerListener;
@@ -14,6 +16,7 @@ import com.smartdevicelink.test.TestValues;
 import com.smartdevicelink.transport.MultiplexTransportConfig;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -33,7 +36,8 @@ import static org.mockito.Mockito.spy;
 
 @RunWith(AndroidJUnit4.class)
 public class MediaStreamingStatusTests {
-
+    @Rule
+    public GrantPermissionRule btRuntimePermissionRule = GrantPermissionRule.grant(Manifest.permission.BLUETOOTH_CONNECT);
 
     @Mock
     private AudioManager audioManager = mock(AudioManager.class);
