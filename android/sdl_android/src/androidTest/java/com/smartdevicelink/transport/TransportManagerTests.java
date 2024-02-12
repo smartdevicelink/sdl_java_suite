@@ -119,7 +119,6 @@ public class TransportManagerTests {
     }
 
     @Test
-    @Ignore
     public void testOnTransportConnections() {
 
         TransportManager manager = createTransportManager();
@@ -142,7 +141,6 @@ public class TransportManagerTests {
     }
 
     @Test
-    @Ignore
     public void testOnPacket() {
         TransportManager manager = createTransportManager();
         assertNotNull(manager.transportListener);
