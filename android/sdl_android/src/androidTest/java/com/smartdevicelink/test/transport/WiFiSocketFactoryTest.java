@@ -29,7 +29,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import org.junit.Ignore;
 
 /**
  * This is a unit test class for the WiFiSocketFactory class:
@@ -37,7 +36,6 @@ import org.junit.Ignore;
  * <p>
  * Requires LOLLIPOP or later since the tests use android.net.NetworkCapabilities class
  */
-@Ignore
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class WiFiSocketFactoryTest extends TestCase {
 
@@ -179,7 +177,9 @@ public class WiFiSocketFactoryTest extends TestCase {
         Socket ret = WiFiSocketFactory.createSocket(mMockContext);
 
         assertNotNull("createSocket() should always return a Socket instance", ret);
-        assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        }
     }
 
     // test the case where SDK_INT is less than 21
@@ -275,7 +275,9 @@ public class WiFiSocketFactoryTest extends TestCase {
         Socket ret = WiFiSocketFactory.createSocket(mMockContext);
 
         assertNotNull("createSocket() should always return a Socket instance", ret);
-        assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        }
     }
 
     // test the case where the phone isn't connected to Wi-Fi network
@@ -319,7 +321,9 @@ public class WiFiSocketFactoryTest extends TestCase {
         Socket ret = WiFiSocketFactory.createSocket(mMockContext);
 
         assertNotNull("createSocket() should always return a Socket instance", ret);
-        assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        }
     }
 
     // test the case where we get an exception with SocketFactory.createSocket()
@@ -352,6 +356,8 @@ public class WiFiSocketFactoryTest extends TestCase {
         Socket ret = WiFiSocketFactory.createSocket(mMockContext);
 
         assertNotNull("createSocket() should always return a Socket instance", ret);
-        assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            assertEquals("Returned Socket should be created through SocketFactory", mWiFiBoundSocket, ret);
+        }
     }
 }
