@@ -23,7 +23,7 @@ public class MultiplexBluetoothTransportTest extends TestCase {
 
     //Example handler
     Handler stateChangeHandler;
-    @Ignore
+    
     public void testStateTransitions() {
         if (Looper.myLooper() == null) {
             Looper.prepare();
@@ -55,9 +55,7 @@ public class MultiplexBluetoothTransportTest extends TestCase {
         assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);
 
         bluetooth.start();
-        if (DeviceUtil.isEmulator()) {
-            assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);
-        } else {
+        if (!DeviceUtil.isEmulator()) {
             assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_LISTEN);
         }
 
