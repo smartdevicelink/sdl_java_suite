@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test_Android:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
 
     - name: Checkout
@@ -23,8 +23,8 @@ jobs:
       with:
         api-level: 34
         target: google_apis
-        ram-size: 4000m
-        arch: x86_64
+        ram-size: 6000m
+        arch: arm64-v8a
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
     - name: Hello Sdl Android Tests
