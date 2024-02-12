@@ -11,7 +11,6 @@ import com.smartdevicelink.transport.SdlRouterService;
 import junit.framework.TestCase;
 
 
-
 public class MultiplexBluetoothTransportTest extends TestCase {
 
     private static final Object REQUEST_LOCK = new Object();
