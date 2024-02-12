@@ -7,6 +7,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Required to check if WiFi is enabled -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
@@ -16,6 +20,16 @@
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
         <activity android:name="com.smartdevicelink.managers.lockscreen.SDLLockScreenActivity" />
+        <receiver
+            android:name=".TestSdlReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.smartdevicelink.USB_ACCESSORY_ATTACHED" /> <!--For AOA -->
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="sdl.router.startservice" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
