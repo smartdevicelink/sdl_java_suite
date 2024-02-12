@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 /**
- * This receiver is so we pass the IntegrationValidator for unit test.
+ * Added so we pass IntegrationValidator when running unit test.
  */
 public class TestSdlReceiver extends BroadcastReceiver {
     @Override
