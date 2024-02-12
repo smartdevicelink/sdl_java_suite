@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test_Android:
-    runs-on: macos-14
+    runs-on: macos-13
     steps:
 
     - name: Checkout
@@ -21,13 +21,8 @@ jobs:
       # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 29
-        arch: arm64-v8a
-        profile: pixel_4a
-        force-avd-creation: false
-        emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-        channel: canary
-        disable-animations: true
+        api-level: 34
+        arch: x86_64
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
     - name: Hello Sdl Android Tests
