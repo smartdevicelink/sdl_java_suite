@@ -92,7 +92,6 @@ public class TransportBrokerTest { //FIXME this test class needs to be fixed. At
         broker.stop();
 
     }
-    
 
     @Test
     public void testOnPacketReceived() {
