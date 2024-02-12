@@ -23,6 +23,8 @@ jobs:
       with:
         api-level: 34
         target: google_apis
+        cores: 4
+        ram-size: 4000m
         arch: x86_64
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
