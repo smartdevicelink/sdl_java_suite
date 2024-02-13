@@ -13,6 +13,7 @@ import com.smartdevicelink.test.SdlUnitTestContants;
 import com.smartdevicelink.test.util.DeviceUtil;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,6 +23,7 @@ import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
+@Ignore // MUST HAVE AN APP WITH A ROUTER SERVICE RUNNING TO RUN THESE TEST
 public class TransportBrokerTest { //FIXME this test class needs to be fixed. At this point these tests are not helpful
     RouterServiceValidator rsvp;
     //		public TransportBrokerThread(Context context, String appId, ComponentName service){
