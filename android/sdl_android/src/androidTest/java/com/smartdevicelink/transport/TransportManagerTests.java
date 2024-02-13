@@ -34,7 +34,7 @@ import static junit.framework.TestCase.assertTrue;
 public class TransportManagerTests {
 
     @Rule
-    public GrantPermissionRule btRuntimePermissionRule;
+    public GrantPermissionRule btRuntimePermissionRule = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? GrantPermissionRule.grant(Manifest.permission.BLUETOOTH_CONNECT) : null;
     MultiplexTransportConfig config;
     final TransportRecord defaultBtRecord = new TransportRecord(TransportType.BLUETOOTH, "12:34:56:78:90");
     final ComponentName routerServiceComponentName = new ComponentName("com.smartdevicelink.test", "com.smartdevicelink.test.SdlRouterService");
@@ -68,10 +68,6 @@ public class TransportManagerTests {
 
     @Before
     public void setUp() throws Exception {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            btRuntimePermissionRule =
-                    GrantPermissionRule.grant(Manifest.permission.BLUETOOTH_CONNECT);
-        }
         config = new MultiplexTransportConfig(getInstrumentation().getContext(), SdlUnitTestContants.TEST_APP_ID);
         config.setService(routerServiceComponentName);
         if (Looper.myLooper() == null) {
