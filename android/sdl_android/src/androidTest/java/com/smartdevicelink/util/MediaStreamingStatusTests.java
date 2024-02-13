@@ -37,7 +37,7 @@ import static org.mockito.Mockito.spy;
 @RunWith(AndroidJUnit4.class)
 public class MediaStreamingStatusTests {
     @Rule
-    public GrantPermissionRule btRuntimePermissionRule = GrantPermissionRule.grant(Manifest.permission.BLUETOOTH_CONNECT);
+    public GrantPermissionRule btRuntimePermissionRule;
 
     @Mock
     private AudioManager audioManager = mock(AudioManager.class);
@@ -63,6 +63,9 @@ public class MediaStreamingStatusTests {
 
     @Before
     public void setUp() throws Exception {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            btRuntimePermissionRule = GrantPermissionRule.grant(Manifest.permission.BLUETOOTH_CONNECT);
+        }
         mockedContext = mock(Context.class);
         doAnswer(onGetSystemService).when(mockedContext).getSystemService(Context.AUDIO_SERVICE);
         defaultMediaStreamingStatus = new MediaStreamingStatus(mockedContext, mock(MediaStreamingStatus.Callback.class));
