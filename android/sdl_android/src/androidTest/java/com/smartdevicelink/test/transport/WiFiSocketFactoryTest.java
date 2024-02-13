@@ -29,7 +29,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
 /**
  * This is a unit test class for the WiFiSocketFactory class:
  * {@link com.smartdevicelink.transport.utl.WiFiSocketFactory}
