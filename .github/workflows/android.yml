@@ -22,6 +22,9 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 34
+        cores: 3
+        ram-size: 6000M
+        heap-size: 4000M
         arch: x86_64
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         
