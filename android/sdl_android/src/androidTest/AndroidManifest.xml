@@ -12,6 +12,15 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
 
+    <queries>
+        <intent>
+            <action android:name="com.smartdevicelink.router.service" />
+        </intent>
+        <intent>
+            <action android:name="sdl.router.startservice" />
+        </intent>
+    </queries>
+
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
         android:targetPackage="com.smartdevicelink.test" />
