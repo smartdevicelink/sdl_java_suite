@@ -38,6 +38,9 @@ android {
         main.java.srcDirs += '../../base/src/main/java'
         androidTest.assets.srcDirs += '../../generator/rpc_spec/'
     }
+    buildFeatures {
+        aidl true
+    }
     namespace 'com.smartdevicelink'
     testNamespace 'com.smartdevicelink.test'
 }
