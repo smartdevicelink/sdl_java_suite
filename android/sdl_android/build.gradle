@@ -38,6 +38,8 @@ android {
         main.java.srcDirs += '../../base/src/main/java'
         androidTest.assets.srcDirs += '../../generator/rpc_spec/'
     }
+    namespace 'com.smartdevicelink'
+    testNamespace 'com.smartdevicelink.test'
 }
 
 ext { VERSION_NAME = "$project.android.defaultConfig.versionName" }
