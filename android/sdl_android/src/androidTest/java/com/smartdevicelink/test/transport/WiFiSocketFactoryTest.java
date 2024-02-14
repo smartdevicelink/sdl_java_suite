@@ -112,6 +112,7 @@ public class WiFiSocketFactoryTest extends TestCase {
         // instance, here we use reflection to call its constructor and a method that are marked
         // with "@hide".
         // Starting in API level 30, this no longer works.
+        // There is not a good way to bypass this so some test will check API level
         Class<NetworkCapabilities> c = NetworkCapabilities.class;
         try {
             Method addTransportTypeMethod = c.getMethod("addTransportType", int.class);
