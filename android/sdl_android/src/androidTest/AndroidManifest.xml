@@ -29,6 +29,16 @@
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
         <activity android:name="com.smartdevicelink.managers.lockscreen.SDLLockScreenActivity" />
+        <receiver
+            android:name=".TestSdlReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.smartdevicelink.USB_ACCESSORY_ATTACHED" /> <!--For AOA -->
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="sdl.router.startservice" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
