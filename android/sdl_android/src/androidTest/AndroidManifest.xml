@@ -1,5 +1,4 @@
-<manifest package="com.smartdevicelink.test"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-sdk android:minSdkVersion="16" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -13,10 +12,33 @@
         android:name="android.test.InstrumentationTestRunner"
         android:targetPackage="com.smartdevicelink.test" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+
+    <queries>
+        <intent>
+            <action android:name="com.smartdevicelink.router.service" />
+        </intent>
+        <intent>
+            <action android:name="sdl.router.startservice" />
+        </intent>
+    </queries>
 
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
         <activity android:name="com.smartdevicelink.managers.lockscreen.SDLLockScreenActivity" />
+        <receiver
+            android:name=".TestSdlReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.smartdevicelink.USB_ACCESSORY_ATTACHED" /> <!--For AOA -->
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="sdl.router.startservice" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -38,6 +38,13 @@ android {
         main.java.srcDirs += '../../base/src/main/java'
         androidTest.assets.srcDirs += '../../generator/rpc_spec/'
     }
+
+    buildFeatures {
+        aidl true
+    }
+
+    namespace 'com.smartdevicelink'
+    testNamespace 'com.smartdevicelink.test'
 }
 
 ext { VERSION_NAME = "$project.android.defaultConfig.versionName" }
@@ -50,11 +57,12 @@ dependencies {
     api 'androidx.annotation:annotation:1.1.0'
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.2.0'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.7.0'
+    androidTestImplementation 'androidx.test:rules:1.5.0'
     androidTestImplementation 'org.mockito:mockito-core:5.7.0'
     androidTestImplementation 'org.mockito:mockito-android:5.7.0'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.5.1'
 }
@@ -65,7 +73,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.13.0'
+        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.27.0'
     }
 }
 
