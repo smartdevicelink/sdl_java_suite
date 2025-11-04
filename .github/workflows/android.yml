@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test_Android:
-    runs-on: macos-15-intel
+    runs-on: ubuntu-latest
     steps:
 
     - name: Checkout
@@ -26,12 +26,7 @@ jobs:
         profile: pixel_7
         disable-animations: true
         emulator-boot-timeout: 1200
-        emulator-options: >
-          -no-window -gpu host -no-boot-anim -no-audio -no-metrics
-          -camera-back none -camera-front none
-          -cores 4 -memory 4096
-        script: ./android/gradlew -p ./android :sdl_android:connectedDebugAndroidTest --max-workers=4
-
+        script: ./android/gradlew -p ./android :sdl_android:connectedDebugAndroidTest
 
     - name: Hello Sdl Android Tests
       run: ./android/gradlew -p ./android/hello_sdl_android test
