@@ -21,7 +21,7 @@ jobs:
       # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 36
+        api-level: 35
         cores: 1
         ram-size: 6144
         heap-size: 512
