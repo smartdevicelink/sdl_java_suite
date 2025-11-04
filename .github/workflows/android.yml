@@ -25,7 +25,10 @@ jobs:
         arch: x86_64
         profile: "pixel_7"                 
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
-        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics
+        emulator-options: >
+            -no-window -gpu host -no-boot-anim -no-audio -no-metrics
+            -camera-back none -camera-front none
+            -cores 6 -memory 6144
         
     - name: Hello Sdl Android Tests
       run: ./android/gradlew -p ./android/hello_sdl_android test
