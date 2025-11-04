@@ -16,20 +16,23 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 17
-        
-    - name: SDL Android Tests (ARM64)
+
+    - name: SDL Android Tests
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 36               
-        target: google_apis          
+        api-level: 36
+        target: google_apis
         arch: x86_64
-        profile: "pixel_7"                 
-        script: ./android/gradlew -p ./android :sdl_android:connectedCheck
+        profile: pixel_7
+        disable-animations: true
+        emulator-boot-timeout: 1200
         emulator-options: >
-            -no-window -gpu host -no-boot-anim -no-audio -no-metrics
-            -camera-back none -camera-front none
-            -cores 6 -memory 6144
-        
+          -no-window -gpu host -no-boot-anim -no-audio -no-metrics
+          -camera-back none -camera-front none
+          -cores 4 -memory 4096
+        script: ./android/gradlew -p ./android :sdl_android:connectedDebugAndroidTest --max-workers=4
+
+
     - name: Hello Sdl Android Tests
       run: ./android/gradlew -p ./android/hello_sdl_android test
 
