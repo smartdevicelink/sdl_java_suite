@@ -4,7 +4,7 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   test_Android:
-    runs-on: macos-26
+    runs-on: ubuntu-latest
     steps:
 
     - name: Checkout
@@ -22,10 +22,8 @@ jobs:
       with:
         api-level: 36               
         target: google_apis          
-        arch: arm64-v8a                        
-        cores: 1
-        ram-size: 6144
-        heap-size: 512
+        arch: x86_64
+        profile: "pixel_7"                 
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics
         
