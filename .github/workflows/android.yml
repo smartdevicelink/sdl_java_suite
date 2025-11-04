@@ -21,14 +21,14 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 36
-        target: default 
+        target: google_apis
         arch: x86_64
         profile: pixel_7
-        no-audio: true 
-        ram-size: 2048M 
-        disk-size: 4096M 
+        ram-size: 2048M
+        disk-size: 4096M
         disable-animations: true
         emulator-boot-timeout: 1200
+        emulator-options: "-no-window -no-snapshot -no-audio"
         script: ./android/gradlew -p ./android :sdl_android:connectedDebugAndroidTest
 
     - name: Hello Sdl Android Tests
