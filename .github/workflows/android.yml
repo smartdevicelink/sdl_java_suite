@@ -17,16 +17,17 @@ jobs:
       with:
         java-version: 17
         
-    - name: Sdl Android Tests
-      # For more info, please check out: https://github.com/marketplace/actions/android-emulator-runner
+    - name: SDL Android Tests (ARM64)
       uses: reactivecircus/android-emulator-runner@v2
       with:
-        api-level: 36
+        api-level: 36               
+        target: google_apis          
+        arch: arm64-v8a                        
         cores: 1
         ram-size: 6144
         heap-size: 512
-        arch: x86_64
         script: ./android/gradlew -p ./android :sdl_android:connectedCheck
+        emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -no-metrics
         
     - name: Hello Sdl Android Tests
       run: ./android/gradlew -p ./android/hello_sdl_android test
