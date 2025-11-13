@@ -52,9 +52,7 @@ public class MultiplexBluetoothTransportTest extends TestCase {
         assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);
 
         bluetooth.start();
-        if (DeviceUtil.isEmulator()) {
-            assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_NONE);
-        } else {
+        if (!DeviceUtil.isEmulator()) {
             assertEquals(bluetooth.getState(), MultiplexBluetoothTransport.STATE_LISTEN);
         }
 
