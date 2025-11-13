@@ -5,6 +5,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 36
+        versionCode 27
+        versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         buildConfigField "String", "VERSION_NAME", '\"' + versionName + '\"'
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
