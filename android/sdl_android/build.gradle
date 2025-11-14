@@ -1,4 +1,21 @@
-apply plugin: 'com.android.library'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    }
+}
+
+plugins {
+    id "com.android.library"
+    id "com.vanniktech.maven.publish" version "0.34.0"
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+}
 
 android {
     compileSdkVersion 36
@@ -66,15 +83,3 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.7.0'
 }
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.34.0'
-    }
-}
-
-apply plugin: "com.vanniktech.maven.publish"
