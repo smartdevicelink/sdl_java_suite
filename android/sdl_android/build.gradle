@@ -1,10 +1,32 @@
-apply plugin: 'com.android.library'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+    }
+}
+
+plugins {
+    id "com.android.library"
+    id "com.vanniktech.maven.publish" version "0.35.0"
+}
+
+group = "com.smartdevicelink"
+version = file("../../VERSION").text.trim()
+
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+}
 
 android {
     compileSdkVersion 36
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 36
+        versionCode 27
+        versionName new File(projectDir.path, ('/../../VERSION')).text.trim()
         buildConfigField "String", "VERSION_NAME", '\"' + versionName + '\"'
         resValue "string", "SDL_LIB_VERSION", '\"' + versionName + '\"'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
@@ -65,14 +87,10 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.7.0'
 }
 
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
-        classpath 'com.vanniktech:gradle-maven-publish-plugin:0.34.0'
+afterEvaluate {
+    tasks.named("sourceReleaseJar") {
+        exclude { details ->
+            details.file.toPath().toString().contains("/generated/")
+        }
     }
 }
-
-apply plugin: "com.vanniktech.maven.publish"
