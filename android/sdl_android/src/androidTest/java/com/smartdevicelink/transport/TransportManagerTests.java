@@ -1,9 +1,12 @@
 package com.smartdevicelink.transport;
 
+import android.Manifest;
 import android.content.ComponentName;
+import android.os.Build;
 import android.os.Looper;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.GrantPermissionRule;
 
 import com.smartdevicelink.protocol.SdlPacket;
 import com.smartdevicelink.protocol.SdlPacketFactory;
@@ -13,6 +16,7 @@ import com.smartdevicelink.transport.enums.TransportType;
 import com.smartdevicelink.transport.utl.TransportRecord;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,6 +33,9 @@ import static junit.framework.TestCase.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class TransportManagerTests {
 
+
+    @Rule
+    public GrantPermissionRule btRuntimePermissionRule = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? GrantPermissionRule.grant(Manifest.permission.BLUETOOTH_CONNECT) : null;
     MultiplexTransportConfig config;
     final TransportRecord defaultBtRecord = new TransportRecord(TransportType.BLUETOOTH, "12:34:56:78:90");
     final ComponentName routerServiceComponentName = new ComponentName("com.smartdevicelink.test", "com.smartdevicelink.test.SdlRouterService");
