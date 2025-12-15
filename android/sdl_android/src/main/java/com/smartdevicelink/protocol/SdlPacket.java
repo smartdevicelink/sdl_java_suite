@@ -87,7 +87,7 @@ public class SdlPacket extends BaseSdlPacket implements Parcelable {
         dest.writeInt(dataSize);
         dest.writeInt(messageId);
         dest.writeInt(payload != null ? 1 : 0);
-        if (payload != null) {
+        if (mPayload != null && mPayload.length > 0) {
             dest.writeByteArray(payload);
         }
         dest.writeInt(priorityCoefficient);
