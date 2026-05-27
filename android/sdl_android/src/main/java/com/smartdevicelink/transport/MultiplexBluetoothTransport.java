@@ -777,6 +777,14 @@ public class MultiplexBluetoothTransport extends MultiplexBaseTransport {
             while (true) {
                 try {
                     bytesRead = mmInStream.read(buffer);
+                    // API-37 changes the read value to -1 when connection is dropped.
+                    // See https://developer.android.com/about/versions/17/behavior-changes-17#bluetooth-rfcomm-socket-change for details.
+                    // We need to handle this case to break the loop.
+                    if (bytesRead == -1) {
+                        DebugTool.logInfo(TAG, "bytesRead returns -1...dealing with connection lost");
+                        connectionLost();
+                        break;
+                    }
                     // Log.i(getClass().getName(), "Received " + bytesRead + " bytes from Bluetooth");
                     for (int i = 0; i < bytesRead; i++) {
                         input = buffer[i];
